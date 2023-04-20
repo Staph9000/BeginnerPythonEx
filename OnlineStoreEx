@@ -1,0 +1,66 @@
+class Product:
+    def __init__(self, name, price, sku, quantity):
+        self.name = name
+        self.price = price
+        self.sku = sku
+        self.quantity = quantity
+
+    def __repr__(self):
+        return "Product(name={}, price={}, sku={}, quantity={})".format(
+            self.name, self.price, self.sku, self.quantity)
+
+
+class OnlineStore:
+    def __init__(self, name):
+        self.name = name
+        self.products = []
+
+    def add_product(self, product):
+        self.products.append(product)
+
+    def remove_product(self, product):
+        self.products.remove(product)
+
+    def show_stock(self):
+        for product in self.products:
+            print("{product.name} (SKU: {product.sku}): {product.quantity} in stock at ${product.price:.2f} each".format(
+                product=product))
+
+    def add_to_cart(self, product, quantity, cart):
+        if product.quantity >= quantity:
+            cart.add_product(product, quantity)
+            product.quantity -= quantity
+            print("{} {} added to cart.".format(quantity, product.name))
+        else:
+            print("Sorry, there is not enough stock to add {} {} to cart.".format(quantity, product.name))
+
+
+class ShoppingCart:
+    def __init__(self):
+        self.products = []
+
+    def add_product(self, product, quantity=1):
+        if product.quantity >= quantity:
+            self.products.append((product, quantity))
+            product.quantity -= quantity
+            print("{} {} added to cart.".format(quantity, product.name))
+        else:
+            print("Sorry, there is not enough stock to add {} {} to cart.".format(quantity, product.name))
+
+    def remove_product(self, product, quantity=1):
+        for item in self.products:
+            if item[0] == product:
+                if item[1] > quantity:
+                    item[1] -= quantity
+                    product.quantity += quantity
+                    print("{} {} removed from cart.".format(quantity, product.name))
+                else:
+                    self.products.remove(item)
+                    product.quantity += item[1]
+                    print("{} {} removed from cart.".format(item[1], product.name))
+                break
+
+    def show_items(self):
+        for item in self.products:
+            print("{product.name} {quantity} in Cart at ${product.price:.2f} each".format(
+                product=item[0], quantity=item[1]))
